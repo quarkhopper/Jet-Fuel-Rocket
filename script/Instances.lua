@@ -23,7 +23,7 @@ function createSparkInst(source)
 	inst.impulse = source.impulse
 	inst.fizzleFreq = source.fizzleFreq
 	inst.splitSpeed = source.splitSpeed
-	inst.splitFreq = source.splitFreq or TOOL.sparkSplitFreqStart.value
+	inst.splitFreq = source.splitFreq or JETFUEL.SPLIT_FREQ_START
 	inst.fireballRadius = source.fireballRadius
 	inst.fireballSparksMax = source.fireballSparksMax
 	inst.torusMag = source.torusMag
@@ -45,43 +45,15 @@ function createBombInst(shape)
 	inst.position = Vec() -- set when ready to detonate
 	inst.dir = nil
 	inst.shape = shape
-	inst.impulse = TOOL.impulsePower.value
-	inst.sparkCount = TOOL.bombSparks.value
-	inst.splitSpeed = TOOL.sparkSplitSpeed.value
-	inst.fizzleFreq = TOOL.sparkFizzleFreq.value
-	inst.splitCount = math.ceil((TOOL.bombEnergy.value * 10^2)/inst.sparkCount)
-	inst.fireballRadius = TOOL.fireballRadius.value
-	inst.fireballSparksMax = TOOL.fireballSparksMax.value
-	inst.torusMag = TOOL.sparkTorusMag.value
-	inst.vacuumMag = TOOL.sparkVacuumMag.value
-	inst.inflationMag = TOOL.sparkInflateMag.value
+	inst.impulse = JETFUEL.IMPULSE_POWER
+	inst.sparkCount = JETFUEL.BOMB_SPARKS
+	inst.splitSpeed = JETFUEL.SPLIT_SPEED
+	inst.fizzleFreq = JETFUEL.FIZZLE_FREQ
+	inst.splitCount = math.ceil((JETFUEL.BOMB_ENERGY * 10^2)/inst.sparkCount)
+	inst.fireballRadius = JETFUEL.FIREBALL_RADIUS
+	inst.fireballSparksMax = JETFUEL.FIREBALL_SPARKS_MAX
+	inst.torusMag = JETFUEL.TORUS_PRESSURE
+	inst.vacuumMag = JETFUEL.VACUUM_PRESSURE
+	inst.inflationMag = JETFUEL.INFLATION_PRESSURE
 	return inst
 end
-
-function createJetInst(shape)
-	-- converts a bomb to a jet
-	local jet = createBombInst(shape)
-	jet.impulse = 0
-	jet.splitSpeed = TOOL.jetSplitSpeed.value
-	jet.fizzleFreq = TOOL.jetFizzleFreq.value
-	jet.fireballRadius = TOOL.jetFireballRadius.value
-	jet.fireballSparksMax = TOOL.jetFireballSparksMax.value
-	jet.torusMag = TOOL.jetTorusMag.value
-	jet.vacuumMag = TOOL.jetVacuumMag.value
-	jet.inflationMag = TOOL.jetInflateMag.value
-	jet.fromJet = true
-	return jet
-end
-
-function debugBomb(bomb)
-	DebugPrint("dir: "..tostring(bomb.dir))
-	DebugPrint("impulse: "..bomb.impulse)
-	DebugPrint("sparkCount: "..bomb.sparkCount)
-	DebugPrint("splitSpeed: "..bomb.splitSpeed)
-	DebugPrint("fizzleFreq: "..bomb.fizzleFreq)
-	DebugPrint("splitCount: "..bomb.splitCount)
-	DebugPrint("fireballRadius: "..bomb.fireballRadius)
-	DebugPrint("fireballSparksMax: "..bomb.fireballSparksMax)
-end
-
-

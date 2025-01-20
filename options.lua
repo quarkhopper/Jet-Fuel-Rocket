@@ -1,23 +1,10 @@
 #include "script/Utils.lua"
 #include "script/Defs.lua"
 #include "script/Types.lua"
-#include "script/GameOptions.lua"
 #include "script/Init.lua"
-
-local TOOL = nil
 
 function init()
     updating_key = nil
-
-    TOOL = load_option_set()
-	if TOOL == nil then
-		TOOL = createDefaultOptions()
-		save_option_set(TOOL)
-	end
-	if TOOL.version ~= CURRENT_VERSION then 
-        TOOL = createDefaultOptions() 
-        reset_all_options()
-    end
 end
 
 function draw()
@@ -35,20 +22,6 @@ function draw()
         for i = 1, #keybind_options do
             draw_keybind_line(keybind_options[i])
             UiTranslate(0, 40)
-        end
-        
-        local ser = GetString(REG.PREFIX_TOOL_OPTIONS)
-        if ser ~= "" then 
-            UiAlign("center middle")
-            UiFont("bold.ttf", 20)
-            UiTranslate(0, 100)
-            UiText("Use this button if there are errors in the mod.", true)
-            UiText("WARNING! This WILL erase your preferences!", true)
-            UiFont("bold.ttf", 40)
-            UiTranslate(0, 20)
-            if UiTextButton("Reset all tool preferences", 450, 50) then
-                reset_all_options()
-            end
         end
     UiPop()
 

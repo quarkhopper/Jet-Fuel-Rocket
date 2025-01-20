@@ -3,13 +3,6 @@
 
 rockets = {}
 launch_sound = LoadSound("MOD/snd/rocket_launch.ogg")
-rocket_boom_sound = LoadSound("MOD/snd/rocket_boom.ogg")
-
-P_ROCKET ={}
-P_ROCKET.PUFF_SIZE_START = 0.6
-P_ROCKET.PUFF_SIZE_END = 0.1
-P_ROCKET.PUFF_STEPS = 15
-P_ROCKET.PUFF_COLOR_VALUE = 0.8
 
 function inst_rocket(body, dir)
     local inst = {}
@@ -27,7 +20,7 @@ function fire_rocket()
 	local gun_end = TransformToParentPoint(camera, Vec(0.2, -0.2, -2))
     local forward = TransformToParentPoint(camera, Vec(0, 0, -10))
     local rocket_rot = QuatLookAt(gun_end, forward)
-    local rocket_body = Spawn("MOD/prefab/pyro_rocket.xml", Transform(gun_end, rocket_rot))[1]
+    local rocket_body = Spawn("MOD/prefab/rocket.xml", Transform(gun_end, rocket_rot))[1]
     local rocket_dir = VecNormalize(VecSub(forward, camera.pos))
     local rocket = inst_rocket(rocket_body, rocket_dir)
     rocket.speed = TOOL.ROCKET.speed.value
