@@ -1,7 +1,6 @@
 #include "Utils.lua"
 #include "Defs.lua"
 
-rockets = {}
 launch_sound = LoadSound("MOD/snd/rocket_launch.ogg")
 
 function inst_rocket(body, dir)
@@ -23,24 +22,18 @@ function fire_rocket()
     local rocket_body = Spawn("MOD/prefab/rocket.xml", Transform(gun_end, rocket_rot))[1]
     local rocket_dir = VecNormalize(VecSub(forward, camera.pos))
     local rocket = inst_rocket(rocket_body, rocket_dir)
-    rocket.speed = TOOL.ROCKET.speed.value
-    rocket.dist_left = TOOL.ROCKET.max_dist.value
+    rocket.speed = JETFUEL.ROCKET_SPEED
+    rocket.dist_left = JETFUEL.ROCKET_MAX_DIST
     table.insert(rockets, rocket)
     PlaySound(launch_sound, gun_end, 10)
 end
 
 function rocket_tick(dt)
-    local default_fuse = 0.1
-    if TOOL.ROCKET.fuse ~= nil then 
-        default_fuse = TOOL.ROCKET.fuse.value
-    end
     local rockets_next_tick = {}
     for i = 1, #rockets do
         local rocket = rockets[i]
         local hit, dist = QueryRaycast(rocket.trans.pos, rocket.dir, rocket.speed, 0.025)
-        if rocket.fuse > 0 then -- > 0 means the fuse is lit
-            rocket.fuse = math.max(rocket.fuse - dt, 0)
-        end
+
         if hit then 
             -- break a hole and on the next tick explode
             if rocket.fuse < 0 then 
