@@ -8,9 +8,6 @@
 boomSound = LoadSound("MOD/snd/toiletBoom.ogg")
 rumbleSound = LoadSound("MOD/snd/rumble.ogg")
 
--- any shape that can explode
-bombs = {}
-
 -- all sparks in the simulation, regardless of where they're assigned
 allSparks = {}
 
@@ -20,11 +17,6 @@ smoke = {}
 
 -- heat centers with sparks assigned to them. One center potentialy forms one torus.
 fireballs = {}
-
--- bombs that are still alive (intact shapes). If bombs
--- are found to be broken shapes, they're added to the
--- toDetonate table
-
 
 -- analyze all sparks to determine fireball centers
 function fireballCalcTick(dt)
@@ -253,20 +245,16 @@ function impulseTick(dt)
 end
 
 function createExplosion(bomb)
-	bomb.position = getBombPosition(bomb)
-	-- check if the bomb can no longer be 
-	-- positioned due to be completely destroyed
-	if bomb.position == nil then return false end
 	for a=1, bomb.sparkCount do
 		throwSpark(bomb)
 	end
-	Explosion(bomb.position, JETFUEL.EXPLOSION_POWER)
+	Explosion(bomb.detPosition, JETFUEL.EXPLOSION_POWER)
 	return true
 end
 
 function throwSpark(bomb)
 	local newSpark = createSparkInst(bomb)
-	newSpark.pos = VecAdd(bomb.position, random_vec(0.5))
+	newSpark.pos = VecAdd(bomb.detPosition, random_vec(0.5))
 	newSpark.speed = JETFUEL.BLAST_SPEED
 	table.insert(allSparks, newSpark)
 end
@@ -327,13 +315,6 @@ function makeSmoke(spark)
 	ParticleColor(smokeColor[1], smokeColor[2], smokeColor[3])
 	ParticleGravity(0)
 	SpawnParticle(VecAdd(spark.pos, random_vec(0.2)), VecScale(VecAdd(spark.dir, random_vec(0.5)), spark.speed), JETFUEL.SMOKE_LIFE)
-end
-
-function getBombPosition(bomb)
-	if bomb == nil then return nil end
-	local position = get_shape_center(bomb.shape)
-	if position == nil then return end -- shape totally destroyed
-	return position
 end
 
 function getIndexByShape(shape, thingTable)

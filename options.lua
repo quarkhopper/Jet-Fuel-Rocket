@@ -1,7 +1,6 @@
 #include "script/Utils.lua"
 #include "script/Defs.lua"
 #include "script/Types.lua"
-#include "script/Init.lua"
 
 function init()
     updating_key = nil

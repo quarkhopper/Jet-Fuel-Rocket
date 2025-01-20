@@ -40,11 +40,18 @@ function createSparkInst(source)
 	return inst
 end
 
-function createBombInst(shape)
-	local inst = {}
-	inst.position = Vec() -- set when ready to detonate
-	inst.dir = nil
-	inst.shape = shape
+function createRocketInst()
+    local inst = {}
+    inst.trans = nil
+    inst.position = nil
+	inst.detPosition = nil
+    inst.dir = nil
+    inst.body = nil
+	inst.shape = nil
+    inst.speed = JETFUEL.ROCKET_SPEED
+	inst.distFlown = 0
+    inst.fuseDist = fuseDistances[fuseIndex]
+    inst.position = Vec() -- set when ready to detonate
 	inst.impulse = JETFUEL.IMPULSE_POWER
 	inst.sparkCount = JETFUEL.BOMB_SPARKS
 	inst.splitSpeed = JETFUEL.SPLIT_SPEED
@@ -55,5 +62,5 @@ function createBombInst(shape)
 	inst.torusMag = JETFUEL.TORUS_PRESSURE
 	inst.vacuumMag = JETFUEL.VACUUM_PRESSURE
 	inst.inflationMag = JETFUEL.INFLATION_PRESSURE
-	return inst
+    return inst
 end

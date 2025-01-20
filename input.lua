@@ -3,13 +3,14 @@
 #include "script/Types.lua"
 #include "script/Simulation.lua"
 
-plantRate = 0.3
-plantTimer = 0
-fuseDistances = { 0, 0.1, 0.5, 1, 2, 3, 5 }
+fireTimer = 0
+fuseDistances = { 0, 0.1, 0.5, 1, 2, 3, 5, 10 }
 fuseIndex = 1
+hidingTool = false
 
 function handleInput(dt)
-	plantTimer = math.max(plantTimer - dt, 0)
+	fireTimer = math.max(fireTimer - dt, 0)
+
 
 	if GetString("game.player.tool") == REG.TOOL_KEY then
 		-- commands you can't do in a vehicle
@@ -17,13 +18,24 @@ function handleInput(dt)
 			-- fire rocket
 			if InputDown(KEY.FIRE.key) and 
 			GetPlayerGrabShape() == 0 
-			and	plantTimer == 0 
+			and	fireTimer == 0 
 			then
 				fire_rocket()
+				fireTimer = JETFUEL.ROCKET_FIRE_DELAY
+			end
+
+			-- hide weapon
+			if InputPressed("F10") then
+				hidingTool = not hidingTool
+			end
+			if hidingTool then
+				SetToolTransform(Transform(Vec(0,-100,0), QuatEuler(0,0,0)))
 			end
 		end
 		-- commands you CAN do in a vehicle
 		if InputPressed(KEY.CYCLE_FUSE.key) then
+			fuseIndex = fuseIndex + 1
+			if fuseIndex > #fuseDistances then fuseIndex = 1 end
 		end
 	end
 end

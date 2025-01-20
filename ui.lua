@@ -9,37 +9,37 @@ function draw()
 end
 
 function drawLegend()
-	UiFont("bold.ttf", UI.LEGEND_TEXT_SIZE)
-	UiTextOutline(0,0,0,1,0.5)
-	UiColor(1,1,1)
-
 	UiPush()
-		UiTranslate(0, UI.LEGEND_TEXT_SIZE + 2)
+		UiFont("bold.ttf", UI.LEGEND_TEXT_SIZE)
+		UiTextOutline(0,0,0,1,0.5)
+		UiColor(1,1,1)
 
 		UiPush()
+			UiTranslate(0, UI.LEGEND_TEXT_SIZE + 2)
+
+			UiPush()
+				UiAlign("left")
+				for i=1, #keybind_options do
+					option = keybind_options[i]
+					local keybindString = "["..option.key.." "..option.name.."]"
+					local textWidth = UiGetTextSize(keybindString)
+					UiText(keybindString, true)
+				end
+			UiPop()
+
+			UiPush()
+				UiAlign("right")
+				UiTranslate(UiWidth() - 5, 0)
+				UiText("[FUSE DIST: "..fuseDistances[fuseIndex].."]")
+			UiPop()
+		UiPop()
+
+		UiPush()
+			UiTranslate(0, UiHeight() - 2)
 			UiAlign("left")
-			for i=1, #keybind_options do
-				option = keybind_options[i]
-				local keybindString = "["..option.key.." "..option.name.."]"
-				local textWidth = UiGetTextSize(keybindString)
-				UiText(keybindString, true)
-			end
-		UiPop()
-
-		UiPush()
-			UiAlign("right")
-			UiTranslate(UiWidth() - 5, 0)
-			UiText("[FUSE DIST: "..fuseDistances[fuseIndex].."]")
+			UiText("Total sparks: "..#allSparks, true)
 		UiPop()
 	UiPop()
-
-	UiPush()
-		UiTranslate(0, UiHeight() - 2)
-		UiAlign("left")
-		UiText("Total sparks: "..#allSparks, true)
-	UiPop()
-UiPop()
-
 end
 
 

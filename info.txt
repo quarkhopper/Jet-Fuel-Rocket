@@ -1,4 +1,4 @@
 name = Jet Fuel Rocket
 author = quarkhopper
-description = [h1]Rocket deliverable jet fuel[/h1]
+description = [h1]Rocket deliverable jet fuel[/h1]Based on the Jet Fuel explosion mod, just deliverable by rocket with the Jet Fuel default options. If you want to tweak explosions, use the Jet Fuel mod. Fully modifiable parameters can be found in scripts/Defs.lua
 tags = Tool

@@ -4,12 +4,13 @@
 #include "script/Defs.lua"
 #include "script/Types.lua"
 #include "script/Simulation.lua"
+#include "script/Rocket.lua"
 
 ------------------------------------------------
 -- INIT
 -------------------------------------------------
 function init()
-	RegisterTool(REG.TOOL_KEY, TOOL_NAME, nil, 5)
+	RegisterTool(REG.TOOL_KEY, TOOL_NAME, "MOD/vox/launcher.vox", 5)
 	SetBool("game.tool."..REG.TOOL_KEY..".enabled", true)
 	SetFloat("game.tool."..REG.TOOL_KEY..".ammo", 1000)
 end
@@ -20,16 +21,15 @@ end
 
 function tick(dt)
 	handleInput(dt)
-	scanBrokenTick(dt)
 	fireballCalcTick(dt)
 	smokeTick(dt)
 	simulationTick(dt)
 	impulseTick(dt)
-	rocketTick(dt)
+	rocketFlyTick(dt)
 	detonationTick(dt)
 	if not canInteract(true, false) then 
 		-- anytime the tool is not available or interactable
-		plantTimer = 0.1
+		fireTimer = 0.1
 	end
 
 	if GetString("game.player.tool") == REG.TOOL_KEY then 
