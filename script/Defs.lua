@@ -1,5 +1,5 @@
-CURRENT_VERSION = "6.1"
-TOOL_NAME = "Jet Fuel"
+CURRENT_VERSION = "1.0"
+TOOL_NAME = "Jet Fuel Rocket"
 
 -- delimeters
 DELIM = {}
@@ -12,7 +12,7 @@ DELIM.OPTION = ";"
 -- registry related delimeters and strings
 REG = {}
 REG.DELIM = "."
-REG.TOOL_KEY = "jetfuel"
+REG.TOOL_KEY = "jetfuelrocket"
 REG.TOOL_NAME = "savegame.mod.tool." .. REG.TOOL_KEY .. ".quarkhopper"
 REG.TOOL_OPTION = "option"
 REG.PREFIX_TOOL_OPTIONS = REG.TOOL_NAME .. REG.DELIM .. REG.TOOL_OPTION
@@ -31,17 +31,10 @@ function setup_keybind(name, reg, default_key)
 end
 
 KEY = {}
-KEY.DETONATE = setup_keybind("detonate bombs", "detonate", "X")
-KEY.PLANT = setup_keybind("plant/infuse/make jet", "plant", "LMB")
-KEY.CLEAR = setup_keybind("clear all", "clear", "V")
-KEY.OPTIONS = setup_keybind("options", "options", "O")
-KEY.INFUSE_MODE = setup_keybind("infuse on/off", "infuse_mode", "I")
-KEY.SINGLE_MODE = setup_keybind("single on/off", "single_mode", "B")
-KEY.REVERSE_MODE = setup_keybind("reverse on/off", "reverse_mode", "N")
-KEY.STICKY_MODE = setup_keybind("sticky on/off", "sticky_mode", "M")
-KEY.JET_MODE = setup_keybind("Jet plant/toggle mode (hold)", "jet_mode", "ALT")
+KEY.FIRE = setup_keybind("Fire rocket", "fire", "LMB")
+KEY.CYCLE_FUSE = setup_keybind("cycle fuse distance", "cycle_fuse", "V")
 
-keybind_options = {KEY.DETONATE, KEY.PLANT, KEY.JET_MODE, KEY.CLEAR, KEY.OPTIONS, KEY.INFUSE_MODE, KEY.SINGLE_MODE, KEY.REVERSE_MODE, KEY.STICKY_MODE }
+keybind_options = {KEY.FIRE, KEY.CYCLE_FUSE }
 
 -- set on init
 TOOL = {}

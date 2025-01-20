@@ -26,7 +26,7 @@ function draw()
         UiTranslate(UiCenter(), 200)
         UiAlign("center middle")
         UiFont("bold.ttf", 40)
-        UiText("Jet Fuel Keybinds", true)
+        UiText("Jet Fuel Rocket Keybinds", true)
         UiText("Press a key to change the binding", true)
         UiText("Press esc to exit")
 
