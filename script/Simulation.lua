@@ -21,24 +21,10 @@ smoke = {}
 -- heat centers with sparks assigned to them. One center potentialy forms one torus.
 fireballs = {}
 
--- bombs actually waiting to be detonated when appropriate
-toDetonate = {}
-
 -- bombs that are still alive (intact shapes). If bombs
 -- are found to be broken shapes, they're added to the
 -- toDetonate table
-function scanBrokenTick(dt)
-	local unbrokenBombs = {}
-	for i=1, #bombs do
-		local bomb = bombs[i]
-		if IsShapeBroken(bomb.shape) then
-			table.insert(toDetonate, bomb)
-		else
-			table.insert(unbrokenBombs, bomb)
-		end
-	end
-	bombs = unbrokenBombs
-end
+
 
 -- analyze all sparks to determine fireball centers
 function fireballCalcTick(dt)
@@ -274,18 +260,14 @@ function createExplosion(bomb)
 	for a=1, bomb.sparkCount do
 		throwSpark(bomb)
 	end
+	Explosion(bomb.position, JETFUEL.EXPLOSION_POWER)
 	return true
 end
 
 function throwSpark(bomb)
 	local newSpark = createSparkInst(bomb)
-	if bomb.jet then 
-		newSpark.pos = bomb.position
-		newSpark.speed = TOOL.jetSpeed.value
-	else
-		newSpark.pos = VecAdd(bomb.position, random_vec(0.5))
-		newSpark.speed = JETFUEL.BLAST_SPEED
-	end
+	newSpark.pos = VecAdd(bomb.position, random_vec(0.5))
+	newSpark.speed = JETFUEL.BLAST_SPEED
 	table.insert(allSparks, newSpark)
 end
 
