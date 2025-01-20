@@ -74,11 +74,14 @@ function detonationTick(dt)
             rocketDetonated = true
         end
         
-        if not rocketDetonated and rocket.distFlown > JETFUEL.ROCKET_SAFE_DIST then 
+        local distFromPlayer = VecLength(VecSub(GetPlayerTransform().pos, rocket.trans.pos))
+        -- if not rocketDetonated and rocket.distFlown > JETFUEL.ROCKET_SAFE_DIST then 
+        if not rocketDetonated and distFromPlayer > JETFUEL.ROCKET_SAFE_DIST then 
             -- check if near enough to something to detonate
             QueryRejectShapes(rejectShapes)
             local near_hit, near_pos, near_normal, near_shape = QueryClosestPoint(rocket.trans.pos, fuseDistances[fuseIndex])
             if near_hit then 
+                rocket.detPosition = rocket.trans.pos
                 rocketDetonated = true
             end
         end 
