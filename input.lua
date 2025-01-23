@@ -6,6 +6,9 @@
 fireTimer = 0
 fuseDistances = { 0, 0.1, 0.5, 1, 2, 3, 5, 10 }
 fuseIndex = 1
+explosionSizes = { 300, 500, 800, 1000, 1500, 2000 }
+sizeIndex = 4
+
 hidingTool = false
 
 function handleInput(dt)
@@ -36,6 +39,11 @@ function handleInput(dt)
 		if InputPressed(KEY.CYCLE_FUSE.key) then
 			fuseIndex = fuseIndex + 1
 			if fuseIndex > #fuseDistances then fuseIndex = 1 end
+		end
+
+		if InputPressed(KEY.CYCLE_EXPLOSION.key) then
+			sizeIndex = sizeIndex + 1
+			if sizeIndex > #explosionSizes then sizeIndex = 1 end
 		end
 	end
 end

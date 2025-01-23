@@ -33,8 +33,9 @@ end
 KEY = {}
 KEY.FIRE = setup_keybind("Fire rocket", "fire", "LMB")
 KEY.CYCLE_FUSE = setup_keybind("cycle fuse distance", "cycle_fuse", "V")
+KEY.CYCLE_EXPLOSION = setup_keybind("cycle explosion size", "cycle_explosion", "B")
 
-keybind_options = {KEY.FIRE, KEY.CYCLE_FUSE }
+keybind_options = {KEY.FIRE, KEY.CYCLE_FUSE, KEY.CYCLE_EXPLOSION }
 
 -- set on init
 VALUES = {}
@@ -51,7 +52,7 @@ JETFUEL.ROCKET_SAFE_DIST = 10.1
 JETFUEL.SPARK_COLOR = Vec(7.7, 0.99, 0.65)
 JETFUEL.SMOKE_COLOR = Vec(0, 0, 0.1)
 JETFUEL.FIREBALL_DIR = Vec(0, 1, 0)
-JETFUEL.SPARKS_SIMULATION = 1000
+-- JETFUEL.SPARKS_SIMULATION = 1000
 JETFUEL.BOMB_ENERGY = 1000
 JETFUEL.BOMB_SPARKS = 100
 JETFUEL.FIREBALL_SPARKS_MAX = 400

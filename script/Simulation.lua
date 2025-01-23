@@ -172,7 +172,7 @@ function simulationTick(dt)
 			end
 
 			-- do some culling
-			while #newSparks > JETFUEL.SPARKS_SIMULATION do
+			while #newSparks > explosionSizes[sizeIndex] do
 				table.remove(newSparks, math.random(1, #newSparks))
 			end
 
