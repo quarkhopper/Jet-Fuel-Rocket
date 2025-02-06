@@ -2,29 +2,45 @@
 #include "script/Defs.lua"
 #include "script/Types.lua"
 #include "script/Simulation.lua"
+#include "script/Weapons.lua"
 
 fireTimer = 0
+altFireTimer = 0
 fuseDistances = { 0, 0.1, 0.5, 1, 2, 3, 5, 10 }
 fuseIndex = 1
 explosionSizes = { 300, 500, 800, 1000, 1500, 2000 }
 sizeIndex = 4
-
+simSize = explosionSizes[sizeIndex]
 hidingTool = false
 
 function handleInput(dt)
 	fireTimer = math.max(fireTimer - dt, 0)
-
+	altFireTimer = math.max(fireTimer - dt, 0)
+	if InputDown(KEY.ALT_FIRE.key) then 
+		simSize = JET.SIM_SIZE
+	else
+		simSize = explosionSizes[sizeIndex]
+	end
 
 	if GetString("game.player.tool") == REG.TOOL_KEY then
 		-- commands you can't do in a vehicle
 		if GetPlayerVehicle() == 0 then 
 			-- fire rocket
 			if InputDown(KEY.FIRE.key) and 
+			not InputDown(KEY.ALT_FIRE.key) and
 			GetPlayerGrabShape() == 0 
 			and	fireTimer == 0 
 			then
 				fire_rocket()
-				fireTimer = JETFUEL.ROCKET_FIRE_DELAY
+				fireTimer = ROCKET.FIRE_DELAY
+			end
+
+			-- fire jet beam
+			if InputDown(KEY.ALT_FIRE.key) and 
+			not InputDown(KEY.FIRE.key) and
+			GetPlayerGrabShape() == 0 
+			then
+				fire_jet()
 			end
 
 			-- hide weapon

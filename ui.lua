@@ -31,7 +31,7 @@ function drawLegend()
 				UiAlign("right")
 				UiTranslate(UiWidth() - 5, 0)
 				UiText("[FUSE DIST: "..fuseDistances[fuseIndex].."]", true)
-				UiText("[EXPLOSION SIZE: "..explosionSizes[sizeIndex].."]", true)
+				UiText("[SIMULATION SIZE: "..simSize.."]", true)
 			UiPop()
 		UiPop()
 

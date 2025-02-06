@@ -92,14 +92,14 @@ function simulationTick(dt)
 			
 			if hit then
 				-- hit something, make hole
-				MakeHole(spark.pos, JETFUEL.HOLE_VOXEL_SOFT / 10, JETFUEL.HOLE_VOXEL_MEDIUM / 10, JETFUEL.HOLE_VOXEL_HARD / 10)
+				MakeHole(spark.pos, SIMULATION.HOLE_VOXEL_SOFT / 10, SIMULATION.HOLE_VOXEL_MEDIUM / 10, SIMULATION.HOLE_VOXEL_HARD / 10)
 				Paint(spark.pos, 0.8, "explosion")
 
 				-- hit following
 				local body = GetShapeBody(shape)
 				if body ~= nil then
 					local velocity = GetProperty(body, "velocity")
-					if VecLength(velocity) < JETFUEL.SPARK_DEATH_SPEED then
+					if VecLength(velocity) < SIMULATION.SPARK_DEATH_SPEED then
 						-- stationary object or it slowed down too much
 						-- if the angle is shallow allow a split, otherwise end the spark
 						local dot = math.abs(VecDot(normal, spark.dir))
@@ -111,7 +111,7 @@ function simulationTick(dt)
 						end
 					else
 						-- moving object, match the speed of it
-						local newSpeed = math.min(VecLength(velocity), JETFUEL.HIT_FOLLOW_MAX_SPEED)
+						local newSpeed = math.min(VecLength(velocity), SIMULATION.HIT_FOLLOW_MAX_SPEED)
 						spark.dir = VecNormalize(velocity)
 						spark.speed = newSpeed
 						forceSplit = true
@@ -122,49 +122,49 @@ function simulationTick(dt)
 				end
 			else
 				-- spark slows down
-				spark.speed = math.max(spark.speed * (1 - JETFUEL.SPARK_SPEED_REDUCTION), JETFUEL.SPARK_DEATH_SPEED)
+				spark.speed = math.max(spark.speed * (1 - SIMULATION.SPARK_SPEED_REDUCTION), SIMULATION.SPARK_DEATH_SPEED)
 
 				-- pressure effects.
 				-- Torus effects - Pulling from behind the cloud and pushing from the front
 				local pressureDistance_n = spark.distance_n  ^ 0.8
-				local angleDot_n = VecDot(spark.lookOriginDir, JETFUEL.FIREBALL_DIR)
+				local angleDot_n = VecDot(spark.lookOriginDir, SIMULATION.FIREBALL_DIR)
 				local torus_n = pressureDistance_n * angleDot_n
-				local torus_mag = spark.torusMag * VALUES.PRESSURE_EFFECT_SCALE * #fireball.sparks * torus_n
+				local torus_mag = spark.torusMag * SIMULATION.PRESSURE_EFFECT_SCALE * #fireball.sparks * torus_n
 				local torus_vector = VecScale(spark.lookOriginDir, torus_mag)
 				pushSparkUniform(spark, torus_vector)
 
 				-- pulling into the center
-				local vacuum_mag = spark.vacuumMag * VALUES.PRESSURE_EFFECT_SCALE * #fireball.sparks * pressureDistance_n
+				local vacuum_mag = spark.vacuumMag * SIMULATION.PRESSURE_EFFECT_SCALE * #fireball.sparks * pressureDistance_n
 				local vacuum_vector = VecScale(spark.lookOriginDir, vacuum_mag ^ 0.5)
 				pushSparkUniform(spark, vacuum_vector)
 
 				-- pushing out
-				local inflate_mag = spark.inflationMag * VALUES.PRESSURE_EFFECT_SCALE * #fireball.sparks * pressureDistance_n * -1
+				local inflate_mag = spark.inflationMag * SIMULATION.PRESSURE_EFFECT_SCALE * #fireball.sparks * pressureDistance_n * -1
 				local inflate_vector = VecScale(spark.lookOriginDir, inflate_mag)
 				pushSparkUniform(spark, inflate_vector)
 
 				-- hurt the player if too close
 				local dist = VecLength(VecSub(player_pos, spark.pos))
-				local dist_n = dist / JETFUEL.IGNITION_RADIUS
+				local dist_n = dist / SIMULATION.IGNITION_RADIUS
 				local hurt_n = 1 - math.min(1, dist_n) ^ 0.5
-				if hurt_n > JETFUEL.SPARK_HURT then
+				if hurt_n > SIMULATION.SPARK_HURT then
 					local health = GetPlayerHealth()
-					SetPlayerHealth(health - (hurt_n * VALUES.SPARK_HURT_SCALE))
+					SetPlayerHealth(health - (hurt_n * SIMULATION.SPARK_HURT_SCALE))
 				end
 
 				-- splitting into new sparks
 				if spark.splitsRemaining < 1 then 
 					sparkStillAlive = false
 				elseif math.random(1, spark.splitFreq) == 1 or forceSplit then
-					for i=1, math.random(JETFUEL.SPARK_SPAWNS_LOWER, JETFUEL.SPARK_SPAWNS_UPPER) do
+					for i=1, math.random(SIMULATION.SPARK_SPAWNS_LOWER, SIMULATION.SPARK_SPAWNS_UPPER) do
 						if spark.splitsRemaining > 0 then
 							spark.splitsRemaining = spark.splitsRemaining - 1
-							local newDir = VecAdd(spark.dir, random_vec(JETFUEL.SPLIT_DIR_VARIATION))
+							local newDir = VecAdd(spark.dir, random_vec(SIMULATION.SPLIT_DIR_VARIATION))
 							newDir = VecNormalize(newDir)
 							local newSpark = createSparkInst(spark)
 							newSpark.pos = spark.pos
 							newSpark.dir = newDir
-							newSpark.speed = vary_by_percentage(spark.splitSpeed, JETFUEL.SPLIT_SPEED_VARIATION)
+							newSpark.speed = vary_by_percentage(spark.splitSpeed, SIMULATION.SPLIT_SPEED_VARIATION)
 							table.insert(newSparks, newSpark) -- will be assigned to a fireball next tick
 						end
 					end
@@ -172,14 +172,14 @@ function simulationTick(dt)
 			end
 
 			-- do some culling
-			while #newSparks > explosionSizes[sizeIndex] do
+			while #newSparks > simSize do
 				table.remove(newSparks, math.random(1, #newSparks))
 			end
 
-			if sparkStillAlive and spark.speed > JETFUEL.SPARK_DEATH_SPEED then
+			if sparkStillAlive and spark.speed > SIMULATION.SPARK_DEATH_SPEED then
 				-- the old spark continues on
 				spark.pos = VecAdd(spark.pos, VecScale(spark.dir, spark.speed))
-				spark.splitFreq = math.floor(math.min(spark.splitFreq + JETFUEL.SPLIT_FREQ_INCREMENT, JETFUEL.SPLIT_FREQ_END))
+				spark.splitFreq = math.floor(math.min(spark.splitFreq + SIMULATION.SPLIT_FREQ_INCREMENT, SIMULATION.SPLIT_FREQ_END))
 				table.insert(newSparks, spark) -- will be assigned to a fireball next tick
 				makeSparkEffect(spark)
 			else
@@ -190,9 +190,9 @@ function simulationTick(dt)
 
 		-- spawn fire
 		for probe=1, #fireball.sparks do
-			if math.random(1, JETFUEL.IGNITION_FREQ) == 1 then
+			if math.random(1, SIMULATION.IGNITION_FREQ) == 1 then
 				local ign_probe_dir = random_vec(1)
-				local ign_probe_hit, ign_probe_dist, ign_probe_normal, ign_probe_shape = QueryRaycast(fireball.center, ign_probe_dir, JETFUEL.IGNITION_RADIUS)
+				local ign_probe_hit, ign_probe_dist, ign_probe_normal, ign_probe_shape = QueryRaycast(fireball.center, ign_probe_dir, SIMULATION.IGNITION_RADIUS)
 				if ign_probe_hit then
 					local ign_probe_pos = VecAdd(fireball.center, VecScale(ign_probe_dir, ign_probe_dist))
 					local mat = GetShapeMaterialAtPosition(ign_probe_shape, ign_probe_pos)
@@ -201,7 +201,7 @@ function simulationTick(dt)
 					else
 						SpawnFire(ign_probe_pos)
 						local ign_dir = random_vec(1)
-						local ign_hit, ign_dist = QueryRaycast(ign_probe_pos, ign_dir, JETFUEL.IGNITION_RADIUS)
+						local ign_hit, ign_dist = QueryRaycast(ign_probe_pos, ign_dir, SIMULATION.IGNITION_RADIUS)
 						if ign_hit then
 							local ign_pos = VecAdd(ign_probe_pos, VecScale(ign_dir, ign_dist))
 							SpawnFire(ign_pos)
@@ -220,9 +220,9 @@ function impulseTick(dt)
 		local fireball = fireballs[e]
 		if fireball.impulse ~= 0 then 
 			local shapesFilter = {}
-			for i=1, JETFUEL.IMPULSE_TRIALS do
+			for i=1, SIMULATION.IMPULSE_TRIALS do
 				QueryRejectShapes(shapesFilter)
-				local imp_hit, imp_pos, imp_normal, imp_shape = QueryClosestPoint(fireball.center, JETFUEL.IMPULSE_RADIUS)
+				local imp_hit, imp_pos, imp_normal, imp_shape = QueryClosestPoint(fireball.center, SIMULATION.IMPULSE_RADIUS)
 				if imp_hit == false then
 					break
 				end
@@ -231,10 +231,10 @@ function impulseTick(dt)
 				if imp_body ~= nil then
 					local imp_delta = VecSub(imp_pos, fireball.center)
 					local imp_delta_mag = VecLength(imp_delta)
-					if imp_delta_mag <= JETFUEL.IMPULSE_RADIUS then
+					if imp_delta_mag <= SIMULATION.IMPULSE_RADIUS then
 						local imp_dir = VecNormalize(imp_delta)
-						local imp_n = 1 - bracket_value(imp_delta_mag/JETFUEL.IMPULSE_RADIUS, 1, 0)
-						local impulse_mag = imp_n * fireball.impulse * #fireball.sparks * VALUES.IMPULSE_SCALE
+						local imp_n = 1 - bracket_value(imp_delta_mag/SIMULATION.IMPULSE_RADIUS, 1, 0)
+						local impulse_mag = imp_n * fireball.impulse * #fireball.sparks * SIMULATION.IMPULSE_SCALE
 						local impulse = VecScale(imp_dir, impulse_mag)
 						ApplyBodyImpulse(imp_body, GetBodyCenterOfMass(imp_body), impulse)
 					end
@@ -246,17 +246,13 @@ end
 
 function createExplosion(bomb)
 	for a=1, bomb.sparkCount do
-		throwSpark(bomb)
+		local newSpark = createSparkInst(bomb)
+		newSpark.pos = VecAdd(bomb.detPosition, random_vec(0.3))
+		newSpark.speed = SIMULATION.BLAST_SPEED
+		table.insert(allSparks, newSpark)
 	end
-	Explosion(bomb.detPosition, JETFUEL.EXPLOSION_POWER)
+	Explosion(bomb.detPosition, SIMULATION.EXPLOSION_POWER)
 	return true
-end
-
-function throwSpark(bomb)
-	local newSpark = createSparkInst(bomb)
-	newSpark.pos = VecAdd(bomb.detPosition, random_vec(0.5))
-	newSpark.speed = JETFUEL.BLAST_SPEED
-	table.insert(allSparks, newSpark)
 end
 
 function pushSparkUniform(spark, effectVector)
@@ -276,18 +272,18 @@ function pushSparkFromOrigin(spark, origin, radius, maxAmount, falloffExponent)
 end
 
 function getSparkLife(spark)
-	local delta = JETFUEL.SPLIT_SPEED - spark.speed
-	local value = delta/(JETFUEL.SPLIT_SPEED - JETFUEL.SPARK_DEATH_SPEED)
+	local delta = spark.splitSpeed - spark.speed
+	local value = delta/(spark.splitSpeed - SIMULATION.SPARK_DEATH_SPEED)
 	return bracket_value(value, 1, 0)
 end
 
 function makeSparkEffect(spark)
 	local movement = random_vec(1)
 	local gravity = 0
-	local colorHSV = JETFUEL.SPARK_COLOR
+	local colorHSV = SIMULATION.SPARK_COLOR
 	local color = HSVToRGB(colorHSV)
-	local intensity = JETFUEL.SPARK_LIGHT_INTENSITY
-	local puffColor = HSVToRGB(Vec(0, 0, VALUES.PUFF_CONTRAST))
+	local intensity = SIMULATION.SPARK_LIGHT_INTENSITY
+	local puffColor = HSVToRGB(Vec(0, 0, SIMULATION.PUFF_CONTRAST))
 	PointLight(spark.pos, color[1], color[2], color[3], intensity)
 
 	-- fire puff
@@ -297,24 +293,24 @@ function makeSparkEffect(spark)
 	ParticleRotation(((math.random() * 2) - 1) * 10)
 	ParticleDrag(0.25)
 	ParticleAlpha(1, 0, "easeout")
-	ParticleRadius(math.random(JETFUEL.SPARK_TILE_RAD_MIN, JETFUEL.SPARK_TILE_RAD_MAX) * 0.1)
+	ParticleRadius(math.random(SIMULATION.SPARK_TILE_RAD_MIN, SIMULATION.SPARK_TILE_RAD_MAX) * 0.1)
 	ParticleColor(puffColor[1], puffColor[2], puffColor[3])
 	ParticleGravity(gravity)
-	SpawnParticle(spark.pos, movement, JETFUEL.PUFF_LIFE)
+	SpawnParticle(spark.pos, movement, SIMULATION.PUFF_LIFE)
 end
 
 function makeSmoke(spark)
-	local smokeColor = HSVToRGB(JETFUEL.SMOKE_COLOR)
+	local smokeColor = HSVToRGB(SIMULATION.SMOKE_COLOR)
 	ParticleReset()
 	ParticleType("smoke")
 	ParticleTile(math.random(0,1))
 	ParticleRotation(((math.random() * 2) - 1) * 10)
 	ParticleDrag(0)
 	ParticleAlpha(1, 0, "easeout", 0.1, 0.5)
-	ParticleRadius(JETFUEL.SMOKE_TILE_SIZE)
+	ParticleRadius(SIMULATION.SMOKE_TILE_SIZE)
 	ParticleColor(smokeColor[1], smokeColor[2], smokeColor[3])
 	ParticleGravity(0)
-	SpawnParticle(VecAdd(spark.pos, random_vec(0.2)), VecScale(VecAdd(spark.dir, random_vec(0.5)), spark.speed), JETFUEL.SMOKE_LIFE)
+	SpawnParticle(VecAdd(spark.pos, random_vec(0.2)), VecScale(VecAdd(spark.dir, random_vec(0.5)), spark.speed), SIMULATION.SMOKE_LIFE)
 end
 
 function getIndexByShape(shape, thingTable)

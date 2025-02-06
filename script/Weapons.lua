@@ -4,6 +4,8 @@
 
 rockets = {}
 launchSound = LoadSound("MOD/snd/rocket_launch.ogg")
+jetSound1 = LoadLoop("MOD/snd/Running.ogg")
+jetSound2 = LoadLoop("MOD/snd/thrower.ogg")
 
 function fire_rocket()
     local camera = GetPlayerCameraTransform()
@@ -18,6 +20,26 @@ function fire_rocket()
     rocket.dir = VecNormalize(VecSub(forward, camera.pos))
     table.insert(rockets, rocket)
     PlaySound(launchSound, gunEnd, 10)
+end
+
+function fire_jet()
+    local camera = GetPlayerCameraTransform()
+    local shoot_dir = TransformToParentVec(camera, Vec(0, 0, -1))
+    local gunEnd = TransformToParentPoint(camera, Vec(0.1, -0.1, -1))
+    local hit, dist, normal, shape = QueryRaycast(camera.pos, shoot_dir, 100, 0.025, true)
+    if hit then
+        local pos = VecAdd(gunEnd, VecScale(shoot_dir, dist - 0.2))
+        local source = createJetInst()
+        local newSpark = createSparkInst(source)
+        newSpark.pos = VecAdd(pos, random_vec(0.2))
+        newSpark.speed = JET.BLAST_SPEED
+
+        -- cull to make room
+        table.insert(allSparks, newSpark)    
+    end
+    PointLight(gunEnd, 5, 0, 0, 0.1)
+    PlayLoop(jetSound1, gunEnd, 50)
+    PlayLoop(jetSound2, gunEnd, 50)
 end
 
 function rocketFlyTick(dt)
@@ -64,7 +86,7 @@ function detonationTick(dt)
         local rocketDetonated = false
         local rocketAborted = false
         rocket.distFlown = rocket.distFlown + rocket.speed
-        if rocket.distFlown > JETFUEL.ROCKET_MAX_DIST then 
+        if rocket.distFlown > ROCKET.ROCKET_MAX_DIST then 
             rocket.detPosition = rocket.trans.pos
             rocketAborted = true
         end
@@ -75,8 +97,8 @@ function detonationTick(dt)
         end
         
         local distFromPlayer = VecLength(VecSub(GetPlayerTransform().pos, rocket.trans.pos))
-        -- if not rocketDetonated and rocket.distFlown > JETFUEL.ROCKET_SAFE_DIST then 
-        if not rocketDetonated and distFromPlayer > JETFUEL.ROCKET_SAFE_DIST then 
+        -- if not rocketDetonated and rocket.distFlown > ROCKET.ROCKET_SAFE_DIST then 
+        if not rocketDetonated and distFromPlayer > ROCKET.ROCKET_SAFE_DIST then 
             -- check if near enough to something to detonate
             QueryRejectShapes(rejectShapes)
             local near_hit, near_pos, near_normal, near_shape = QueryClosestPoint(rocket.trans.pos, fuseDistances[fuseIndex])

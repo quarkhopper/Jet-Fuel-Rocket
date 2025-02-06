@@ -4,7 +4,7 @@
 #include "script/Defs.lua"
 #include "script/Types.lua"
 #include "script/Simulation.lua"
-#include "script/Rocket.lua"
+#include "script/Weapons.lua"
 
 ------------------------------------------------
 -- INIT

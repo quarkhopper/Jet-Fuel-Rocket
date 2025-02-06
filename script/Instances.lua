@@ -23,7 +23,7 @@ function createSparkInst(source)
 	inst.impulse = source.impulse
 	inst.fizzleFreq = source.fizzleFreq
 	inst.splitSpeed = source.splitSpeed
-	inst.splitFreq = source.splitFreq or JETFUEL.SPLIT_FREQ_START
+	inst.splitFreq = source.splitFreq
 	inst.fireballRadius = source.fireballRadius
 	inst.fireballSparksMax = source.fireballSparksMax
 	inst.torusMag = source.torusMag
@@ -48,19 +48,35 @@ function createRocketInst()
     inst.dir = nil
     inst.body = nil
 	inst.shape = nil
-    inst.speed = JETFUEL.ROCKET_SPEED
+    inst.speed = ROCKET.ROCKET_SPEED
 	inst.distFlown = 0
     inst.fuseDist = fuseDistances[fuseIndex]
     inst.position = Vec() -- set when ready to detonate
-	inst.impulse = JETFUEL.IMPULSE_POWER
-	inst.sparkCount = JETFUEL.BOMB_SPARKS
-	inst.splitSpeed = JETFUEL.SPLIT_SPEED
-	inst.fizzleFreq = JETFUEL.FIZZLE_FREQ
-	inst.splitCount = math.ceil((JETFUEL.BOMB_ENERGY * 10^2)/inst.sparkCount)
-	inst.fireballRadius = JETFUEL.FIREBALL_RADIUS
-	inst.fireballSparksMax = JETFUEL.FIREBALL_SPARKS_MAX
-	inst.torusMag = JETFUEL.TORUS_PRESSURE
-	inst.vacuumMag = JETFUEL.VACUUM_PRESSURE
-	inst.inflationMag = JETFUEL.INFLATION_PRESSURE
+	inst.impulse = ROCKET.IMPULSE_POWER
+	inst.sparkCount = ROCKET.BOMB_SPARKS
+	inst.splitSpeed = ROCKET.SPLIT_SPEED
+	inst.splitFreq = ROCKET.SPLIT_FREQ_START
+	inst.fizzleFreq = ROCKET.FIZZLE_FREQ
+	inst.splitCount = math.ceil((ROCKET.BOMB_ENERGY * 10^2)/inst.sparkCount)
+	inst.fireballRadius = ROCKET.FIREBALL_RADIUS
+	inst.fireballSparksMax = ROCKET.FIREBALL_SPARKS_MAX
+	inst.torusMag = ROCKET.TORUS_PRESSURE
+	inst.vacuumMag = ROCKET.VACUUM_PRESSURE
+	inst.inflationMag = ROCKET.INFLATION_PRESSURE
     return inst
 end
+
+function createJetInst()
+    local inst = createRocketInst()
+	inst.impulse = JET.IMPULSE_POWER
+	inst.splitSpeed = JET.SPLIT_SPEED
+	inst.splitFreq = JET.SPLIT_FREQ_START
+	inst.fizzleFreq = JET.FIZZLE_FREQ
+	inst.fireballRadius = JET.FIREBALL_RADIUS
+	inst.fireballSparksMax = JET.FIREBALL_SPARKS_MAX
+	inst.torusMag = JET.TORUS_PRESSURE
+	inst.vacuumMag = JET.VACUUM_PRESSURE
+	inst.inflationMag = JET.INFLATION_PRESSURE
+    return inst
+end
+
