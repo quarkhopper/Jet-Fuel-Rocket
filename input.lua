@@ -16,11 +16,6 @@ hidingTool = false
 function handleInput(dt)
 	fireTimer = math.max(fireTimer - dt, 0)
 	altFireTimer = math.max(fireTimer - dt, 0)
-	if InputDown(KEY.ALT_FIRE.key) then 
-		simSize = JET.SIM_SIZE
-	else
-		simSize = explosionSizes[sizeIndex]
-	end
 
 	if GetString("game.player.tool") == REG.TOOL_KEY then
 		-- commands you can't do in a vehicle
@@ -28,9 +23,10 @@ function handleInput(dt)
 			-- fire rocket
 			if InputDown(KEY.FIRE.key) and 
 			not InputDown(KEY.ALT_FIRE.key) and
-			GetPlayerGrabShape() == 0 
-			and	fireTimer == 0 
+			GetPlayerGrabShape() == 0 and
+			fireTimer == 0 
 			then
+				simSize = explosionSizes[sizeIndex]
 				fire_rocket()
 				fireTimer = ROCKET.FIRE_DELAY
 			end
@@ -38,9 +34,12 @@ function handleInput(dt)
 			-- fire jet beam
 			if InputDown(KEY.ALT_FIRE.key) and 
 			not InputDown(KEY.FIRE.key) and
-			GetPlayerGrabShape() == 0 
+			GetPlayerGrabShape() == 0 and
+			altFireTimer == 0 
 			then
+				simSize = JET.SIM_SIZE
 				fire_jet()
+				altFireTimer = JET.FIRE_DELAY
 			end
 
 			-- hide weapon
