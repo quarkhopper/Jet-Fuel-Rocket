@@ -59,6 +59,7 @@ function handleInput(dt)
 		if InputPressed(KEY.CYCLE_EXPLOSION.key) then
 			sizeIndex = sizeIndex + 1
 			if sizeIndex > #explosionSizes then sizeIndex = 1 end
+			simSize = explosionSizes[sizeIndex]
 		end
 	end
 end
