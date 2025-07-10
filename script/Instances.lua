@@ -19,6 +19,7 @@ function createSparkInst(source)
 	inst.pos = Vec() -- set on init
 	inst.speed = 0 -- set on init
 	inst.dir = source.dir or random_vec(1)
+	inst.fireballDir = source.fireballDir
 	inst.splitsRemaining = source.splitCount or source.splitsRemaining
 	inst.impulse = source.impulse
 	inst.fizzleFreq = source.fizzleFreq
@@ -48,6 +49,7 @@ function createRocketInst()
     inst.dir = nil
     inst.body = nil
 	inst.shape = nil
+	inst.fireballDir = ROCKET.FIREBALL_DIR
     inst.speed = ROCKET.ROCKET_SPEED
 	inst.distFlown = 0
     inst.fuseDist = fuseDistances[fuseIndex]
@@ -68,6 +70,7 @@ end
 
 function createJetInst()
     local inst = createRocketInst()
+	inst.fireballDir = JET.FIREBALL_DIR
 	inst.impulse = JET.IMPULSE_POWER
 	inst.splitSpeed = JET.SPLIT_SPEED
 	inst.splitFreq = JET.SPLIT_FREQ_START
